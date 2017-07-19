@@ -12,7 +12,7 @@ class GraphiteService(private val graphiteClient: GraphiteClient) {
 
     fun collectAndSendMetrics() {
         val epoch = Instant.now().toEpochMilli()
-        val metric = GraphiteMetric("demo.metric", "hello world", epoch)
+        val metric = GraphiteMetric("demo.metric.sample", "13", epoch)
 
         logger.info { metric }
         graphiteClient.send(metric)

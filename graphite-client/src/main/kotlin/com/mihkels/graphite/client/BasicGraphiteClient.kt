@@ -1,10 +1,10 @@
 package com.mihkels.graphite.client
 
 import mu.KLogging
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.InetSocketAddress
+import java.io.IOException
+import java.io.PrintWriter
+import java.net.Socket
+import java.net.UnknownHostException
 
 data class  GraphiteSettings(val hostUrl: String = "localhost", val hostPort: Int = 2003)
 
@@ -18,44 +18,45 @@ class BasicGraphiteClient(private val graphiteSettings: GraphiteSettings): Graph
 
     override fun send(graphiteMetric: GraphiteMetric) {
         logger.info { "Start Sending out metric: $graphiteMetric" }
-        sender { socket ->
-            socket.send(prepareMetric(graphiteMetric))
+        sender { writer ->
+            val message = convertToSting(graphiteMetric)
+            logger.info { "Output message: $message" }
+            writer.print(message)
         }
         logger.info { "Finished sending out metric" }
     }
 
     override fun send(graphiteMetrics: Collection<GraphiteMetric>) {
         logger.info { "Multi metric send started" }
-
-        sender { socket ->
+        sender { writer ->
             graphiteMetrics.forEach {
                 logger.info { "Sending out: $it" }
-                socket.send(prepareMetric(it))
+                writer.print(convertToSting(it))
             }
         }
-
         logger.info { "Finished sending out multi metric to graphite" }
     }
 
-    private fun sender(callback: (DatagramSocket) -> Unit) {
-        val socket = openConnection()
-        callback(socket)
-        closeConnection(socket)
-    }
+    private fun sender(callback: (PrintWriter) -> Unit) {
+        try {
+            val socket = Socket(graphiteSettings.hostUrl, graphiteSettings.hostPort)
+            logger.info { "Connection status: ${socket.isConnected}" }
+            val outputStream = socket.getOutputStream()
+            val writer = PrintWriter(outputStream, true)
+            callback(writer)
 
-    private fun prepareMetric(graphiteMetric: GraphiteMetric): DatagramPacket {
-        val message = convertToSting(graphiteMetric)
-        return DatagramPacket(message.toByteArray(), message.length, graphiteHostIp(), graphiteSettings.hostPort)
+            writer.close()
+            socket.close()
+        } catch (e: UnknownHostException) {
+            throw GraphiteException("Unknown host: ${graphiteSettings.hostUrl}")
+        } catch (e: IOException) {
+            throw GraphiteException("Error while writing data to graphite: ${e.message}")
+        }
     }
 
     private fun convertToSting(metric: GraphiteMetric) =
-            "${metric.metricName} ${metric.metricValue} ${metric.timestamp}"
+            "${metric.metricName} ${metric.metricValue} ${metric.timestamp}\n"
 
-    private fun graphiteHostIp() = InetAddress.getByName(graphiteSettings.hostUrl)
-
-    private fun openConnection() = DatagramSocket(InetSocketAddress(InetAddress.getLocalHost(), 0))
-
-    private fun closeConnection(socket: DatagramSocket) {
-        socket.close()
-    }
 }
+
+class GraphiteException(message: String) : Exception(message)
