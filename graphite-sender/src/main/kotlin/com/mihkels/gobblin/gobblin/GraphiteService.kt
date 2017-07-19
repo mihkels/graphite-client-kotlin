@@ -1,8 +1,8 @@
 package com.mihkels.gobblin.gobblin
 
+import com.mihkels.graphite.client.GraphiteClient
+import com.mihkels.graphite.client.GraphiteMetric
 import mu.KLogging
-import net.savantly.graphite.GraphiteClient
-import net.savantly.graphite.impl.SimpleCarbonMetric
 import org.springframework.stereotype.Service
 import java.time.Instant
 
@@ -12,9 +12,9 @@ class GraphiteService(private val graphiteClient: GraphiteClient) {
 
     fun collectAndSendMetrics() {
         val epoch = Instant.now().toEpochMilli()
-        val metric = SimpleCarbonMetric("demo.metric", "hello world", epoch)
+        val metric = GraphiteMetric("demo.metric", "hello world", epoch)
 
         logger.info { metric }
-        graphiteClient.saveCarbonMetrics(metric)
+        graphiteClient.send(metric)
     }
 }
