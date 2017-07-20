@@ -1,6 +1,6 @@
 package com.mihkels.graphite.bash
 
-import java.io.FileNotFoundException
+import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -16,7 +16,7 @@ interface BashExecutor {
 class SimpleBashExecutor(private val bashExecutorSettings: BashExecutorSettings): BashExecutor {
     override fun runScript(scriptName: String): String {
         if (Files.exists(Paths.get(scriptName)).not()) {
-            throw FileNotFoundException("No such file $scriptName make sure the BASH script path is correct")
+            throw IOException("No such file $scriptName make sure the BASH script path is correct")
         }
 
         return "Hello World"

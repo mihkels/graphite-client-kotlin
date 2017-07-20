@@ -5,14 +5,14 @@ Simple Graphite JMX metrics pushing client written in Kotlin.
 ### Add Maven dependency
 
 ```xml
-    <dependency>
-        <groupId>com.mihkels.graphite</groupId>
-        <artifactId>graphite-client</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </dependency>
+<dependency>
+    <groupId>com.mihkels.graphite</groupId>
+    <artifactId>graphite-client</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+</dependency>
 ```
 
-### Basic usage
+### Usage 
 
 ```kotlin
 fun main(args: Array<String>) {
