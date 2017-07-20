@@ -5,8 +5,8 @@
 
 	<artifactId>graphite-sender</artifactId>
 
-	<name>gobblin-client</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Graphite - Sample client application</name>
+	<description>xSample application collect and send out JMX metrics to Graphite</description>
 
 	<parent>
 		<groupId>com.mihkels.graphite</groupId>
@@ -32,12 +32,16 @@
 			<artifactId>kotlin-reflect</artifactId>
 		</dependency>
 
-		<!-- TODO: Remove -->
 		<dependency>
 			<groupId>com.mihkels.graphite</groupId>
 			<artifactId>graphite-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>com.mihkels.graphite</groupId>
+            <artifactId>bash-script-executor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

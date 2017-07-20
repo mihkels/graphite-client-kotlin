@@ -6,7 +6,9 @@ import java.io.PrintWriter
 import java.net.Socket
 import java.net.UnknownHostException
 
-data class  GraphiteSettings(val hostUrl: String = "localhost", val hostPort: Int = 2003)
+data class GraphiteMetric(val metricName: String, val metricValue: String, val timestamp: Long)
+
+data class GraphiteSettings(val hostUrl: String = "localhost", val hostPort: Int = 2003)
 
 interface GraphiteClient {
     fun send(graphiteMetric: GraphiteMetric)
@@ -56,7 +58,6 @@ class BasicGraphiteClient(private val graphiteSettings: GraphiteSettings): Graph
 
     private fun convertToSting(metric: GraphiteMetric) =
             "${metric.metricName} ${metric.metricValue} ${metric.timestamp}\n"
-
 }
 
 class GraphiteException(message: String) : Exception(message)

@@ -6,6 +6,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <name>Graphite - parent project</name>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -23,6 +25,7 @@
     <modules>
         <module>graphite-client</module>
         <module>graphite-sender</module>
+        <module>bash-script-executor</module>
     </modules>
 
     <dependencyManagement>
@@ -47,6 +50,12 @@
                 <artifactId>kotlin-test</artifactId>
                 <version>${kotlin.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.zeroturnaround</groupId>
+                <artifactId>zt-exec</artifactId>
+                <version>1.9</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
