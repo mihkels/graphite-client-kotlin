@@ -1,20 +1,35 @@
 package com.mihkels.graphite.bash
 
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.assertj.core.api.KotlinAssertions.assertThat
+import org.hamcrest.CoreMatchers
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.ExpectedException
+import java.io.IOException
 
 internal class SimpleBashExecutorTest {
-    private val executorSettings = BashExecutorSettings(".")
-    private var simpleBashExecutor = SimpleBashExecutor(executorSettings)
+    @Rule @JvmField
+    val exceptionRue: ExpectedException = ExpectedException.none()
 
-    @BeforeEach
-    internal fun setUp() {
-        simpleBashExecutor = SimpleBashExecutor(executorSettings)
+    private var simpleBashExecutor = SimpleBashExecutor()
+
+    @Before
+    fun setUp() {
+        simpleBashExecutor = SimpleBashExecutor()
     }
 
     @Test
-    internal fun happyPathExecutionTest() {
+    internal fun givenValidScriptWillRunItAndReturnHello() {
+        val result = simpleBashExecutor.runScript("/hello.sh")
+        assertThat(result).isEqualTo("hello.world 10 1500627240927\n")
+    }
 
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    @Test
+    internal fun givenInvalidScriptNameThrowsError() {
+        val scriptName = "invalid_file.sh"
+        exceptionRue.expect(IOException::class.java)
+        exceptionRue.expectMessage(CoreMatchers.containsString(" make sure the BASH script path is correct") )
+        simpleBashExecutor.runScript(scriptName)
     }
 }
