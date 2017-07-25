@@ -12,7 +12,7 @@ data class GraphiteSettings(val hostUrl: String = "localhost", val hostPort: Int
 
 interface GraphiteClient {
     fun send(graphiteMetric: GraphiteMetric)
-    fun send(graphiteMetrics : Collection<GraphiteMetric>)
+    fun send(graphiteMetrics: Collection<GraphiteMetric>)
 }
 
 class BasicGraphiteClient(private val graphiteSettings: GraphiteSettings): GraphiteClient {

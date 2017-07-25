@@ -9,7 +9,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.streams.toList
 
-
 interface BashExecutor {
     fun runScript(scriptName: String): String
     fun runDirectory(directoryName: String): List<String>
@@ -62,7 +61,7 @@ internal class FileHelpers {
 
         Files.walk(scriptDirectoryPath).use { paths ->
             files = paths.filter { path -> Files.isRegularFile(path) }
-                    .map { it.normalize().toString() }
+                    .map { it.toAbsolutePath().normalize().toString() }
                     .toList()
         }
 
