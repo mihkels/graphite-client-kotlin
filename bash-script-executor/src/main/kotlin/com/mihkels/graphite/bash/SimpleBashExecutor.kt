@@ -7,7 +7,8 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
+import kotlin.streams.toList
+
 
 interface BashExecutor {
     fun runScript(scriptName: String): String
@@ -16,17 +17,21 @@ interface BashExecutor {
 
 class SimpleBashExecutor: BashExecutor {
     companion object: KLogging()
+    private val fileHelpers = FileHelpers()
 
     override fun runScript(scriptName: String): String {
-        val fullPath = getFileFullPath(scriptName)
-        return executeScript(fullPath)
+        val fullPath = fileHelpers.getPath(scriptName)
+        return executeScript(fullPath.normalize().toString())
     }
 
     override fun runDirectory(directoryName: String): List<String> {
-        val baseDirectory = getDirectory(directoryName)
+        val output: MutableList<String> = mutableListOf()
+        fileHelpers.getFiles(directoryName).forEach {
+            logger.info { "Executing script: $it" }
+            output.add(executeScript(it))
+        }
 
-
-        return Arrays.asList("Hello World")
+        return output
     }
 
     private fun executeScript(fullPath: String): String {
@@ -34,20 +39,33 @@ class SimpleBashExecutor: BashExecutor {
                 .redirectOutput(Slf4jStream.of(javaClass).asInfo())
                 .readOutput(true).execute().outputUTF8()
     }
+}
 
-    private fun getFileFullPath(scriptName: String): String {
+internal class FileHelpers {
+    fun getPath(scriptName: String): Path {
         var localScriptName = Paths.get(scriptName)
 
         val resourceRoot = this::class.java.getResource("/")?.path
         localScriptName = if (Files.exists(localScriptName)) localScriptName
-                          else Paths.get("$resourceRoot/$scriptName")
+        else Paths.get("$resourceRoot/$scriptName")
 
         if (Files.notExists(localScriptName)) {
             throw IOException("No such file $localScriptName make sure the BASH script path is correct")
         }
 
-        return localScriptName.normalize().toString()
+        return localScriptName
     }
 
-    private fun getDirectory(directoryName: String): Path = Paths.get(".")
+    fun getFiles(inputPath: String): List<String> {
+        val scriptDirectoryPath = getPath(inputPath)
+        var files: List<String> = emptyList()
+
+        Files.walk(scriptDirectoryPath).use { paths ->
+            files = paths.filter { path -> Files.isRegularFile(path) }
+                    .map { it.normalize().toString() }
+                    .toList()
+        }
+
+        return files
+    }
 }

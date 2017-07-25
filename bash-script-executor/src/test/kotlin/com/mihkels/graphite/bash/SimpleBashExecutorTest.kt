@@ -21,7 +21,7 @@ internal class SimpleBashExecutorTest {
 
     @Test
     internal fun givenValidScriptWillRunItAndReturnHello() {
-        val result = simpleBashExecutor.runScript("/hello.sh")
+        val result = simpleBashExecutor.runScript("hello.sh")
         assertThat(result).isEqualTo("hello.world 10 1500627240927\n")
     }
 
@@ -31,5 +31,12 @@ internal class SimpleBashExecutorTest {
         exceptionRue.expect(IOException::class.java)
         exceptionRue.expectMessage(CoreMatchers.containsString(" make sure the BASH script path is correct") )
         simpleBashExecutor.runScript(scriptName)
+    }
+
+    @Test
+    fun givenValidDirectoryRunsAllScriptsInsideAndReturnsResults() {
+        val result = simpleBashExecutor.runDirectory("multi_script")
+        assertThat(result.size).isEqualTo(2)
+        assertThat(result[0]).contains("ONE")
     }
 }

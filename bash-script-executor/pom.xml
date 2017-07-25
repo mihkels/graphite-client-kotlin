@@ -89,7 +89,7 @@
                         <phase>process-test-classes</phase>
                         <configuration>
                             <tasks>
-                                <chmod file="${build.testOutputDirectory}/*.sh" perm="777"/>
+                                <chmod dir="${build.testOutputDirectory}" includes="**/*.sh" perm="777"/>
                             </tasks>
                         </configuration>
                         <goals>
