@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-echo "NOK"
+echo "0"

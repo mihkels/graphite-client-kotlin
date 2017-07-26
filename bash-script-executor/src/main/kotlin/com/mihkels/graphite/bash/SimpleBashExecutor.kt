@@ -11,7 +11,7 @@ import kotlin.streams.toList
 
 interface BashExecutor {
     fun runScript(scriptName: String): String
-    fun runDirectory(directoryName: String): List<String>
+    fun runDirectory(directoryName: String, callback:  (String, String) -> Unit = {p1, p2 ->}): List<String>
 }
 
 class SimpleBashExecutor: BashExecutor {
@@ -23,11 +23,14 @@ class SimpleBashExecutor: BashExecutor {
         return executeScript(fullPath.normalize().toString())
     }
 
-    override fun runDirectory(directoryName: String): List<String> {
+    override fun runDirectory(directoryName: String, callback:  (outpput: String, scriptName: String) -> Unit): List<String> {
         val output: MutableList<String> = mutableListOf()
         fileHelpers.getFiles(directoryName).forEach {
             logger.info { "Executing script: $it" }
-            output.add(executeScript(it))
+
+            val scriptOutput = executeScript(it)
+            output.add(scriptOutput)
+            callback(scriptOutput, it)
         }
 
         return output
