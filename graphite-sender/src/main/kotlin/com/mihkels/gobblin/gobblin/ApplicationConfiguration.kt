@@ -4,7 +4,8 @@ import com.mihkels.graphite.bash.BashExecutor
 import com.mihkels.graphite.bash.SimpleBashExecutor
 import com.mihkels.graphite.client.BasicGraphiteClient
 import com.mihkels.graphite.client.GraphiteClient
-import com.mihkels.graphite.client.GraphiteSettings
+import com.mihkels.graphite.client.GraphiteClientProperties
+import com.mihkels.graphite.client.SocketSender
 import mu.KLogging
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -20,10 +21,12 @@ class GraphiteClientConfiguration(private val properties: GraphiteProperties) {
     companion object: KLogging()
 
     @Bean
-    fun graphiteSettings(): GraphiteSettings = GraphiteSettings(properties.serverUrl, properties.serverPort)
+    fun graphiteSettings(): GraphiteClientProperties =
+            GraphiteClientProperties(properties.serverUrl, properties.serverPort)
 
     @Bean
-    fun graphiteClient(graphiteSettings: GraphiteSettings): GraphiteClient = BasicGraphiteClient(graphiteSettings)
+    fun graphiteClient(graphiteSettings: GraphiteClientProperties): GraphiteClient =
+            BasicGraphiteClient(graphiteSettings, SocketSender())
 }
 
 @ConfigurationProperties(prefix = "graphite.script.executor")
