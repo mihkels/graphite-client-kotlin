@@ -1,6 +1,6 @@
 # Graphite Kotlin Client
 
-Simple Graphite JMX metrics pushing client written in Kotlin.
+Simple Graphite for Kotlin and Java. Right now only supported protocol is plaintext. 
 
 ### Add Maven dependency
 
@@ -12,14 +12,41 @@ Simple Graphite JMX metrics pushing client written in Kotlin.
 </dependency>
 ```
 
-### Usage 
+### Java usage sample
+
+```java
+import com.playtech.gobblin.graphite.*;
+import java.time.Instant;
+
+public class Demo {
+    public static void main(String... args) {
+        GraphiteClientProperties properties = new GraphiteClientProperties();
+        properties.setHostname("localhost");
+        properties.setPort(2003);
+        properties.setMetricPrefix("central-logging");
+
+        GraphiteClient client = new BasicGraphiteClient(properties, new SocketSender());
+        client.send(new GraphiteMetric("hello", "1", Instant.now().toEpochMilli()));
+    }
+}
+```
+
+### Kotlin  usage sample 
 
 ```kotlin
 fun main(args: Array<String>) {
-    val graphiteClient = BasicGraphiteClient(GraphiteSettings("localhost", 2003))
-    val epoch = Instant.now().toEpochMilli()
+    // Set up properties
+    val sender = SocketSender()
+    val properties = GraphiteClientProperties("localhost", 2003, "prefix")
+    
+    // Create client 
+    val graphiteClient = BasicGraphiteClient(properties, sender)
+    
+    // Create metric 
+    val timestamp = Instant.now().toEpochMilli()
     val metric = GraphiteMetric("demo.metric.sample", "13", epoch)
-
+    
+    // Send out metric
     graphiteClient.send(metric)
 }
 ```
