@@ -15,7 +15,7 @@ Simple Graphite for Kotlin and Java. Right now only supported protocol is plaint
 ### Java usage sample
 
 ```java
-import com.playtech.gobblin.graphite.*;
+import com.mihkels.graphite.client
 import java.time.Instant;
 
 public class Demo {
