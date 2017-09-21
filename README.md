@@ -2,6 +2,9 @@
 
 Simple Graphite for Kotlin and Java. Right now only supported protocol is plaintext. 
 
+> **NOTE** Right now the client is not released in Maven central and you need to build it manually by cloning the repostory 
+> and running `mvn clean install`
+
 ### Add Maven dependency
 
 ```xml
