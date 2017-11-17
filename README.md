@@ -1,5 +1,7 @@
 # Graphite Kotlin Client
 
+[![Build Status](https://travis-ci.org/mihkels/graphite-client-kotlin.svg?branch=master)](https://travis-ci.org/mihkels/graphite-client-kotlin)
+
 Simple Graphite for Kotlin and Java. Right now only supported protocol is plaintext. 
 
 > **NOTE** Right now the client is not released in Maven central and you need to build it manually by cloning the repostory 
