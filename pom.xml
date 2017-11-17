@@ -166,4 +166,12 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-mihkels-kotlin-projects</id>
+            <name>mihkels-kotlin-projects</name>
+            <url>https://api.bintray.com/maven/mihkels/kotlin-projects/graphite-client-kotlin/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
 </project>
